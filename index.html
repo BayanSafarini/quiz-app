@@ -1,14 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz App</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <h1>Welcome to the Quiz App</h1>
-  <p>Test your knowledge with our fun quizzes!</p>
-    <script src="/js/app.js"></script>
-</body>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main>
+      <h1 class="quiz-title">Test Your Knowledge</h1>
+
+      <section class="quiz">
+        <h2 class="quiz__question-number"></h2>
+        <p class="quiz__question"></p>
+        <button class="quiz__choice"></button>
+        <button class="quiz__choice"></button>
+        <button class="quiz__choice"></button>
+        <button class="quiz__choice"></button>
+        <div class="quiz__footer">
+          <p class="quiz__score"></p>
+          <button class="quiz__next"></button>
+        </div>
+      </section>
+      <section class="quiz-result">
+        <h2 class="quiz-result__title"></h2>
+        <p class="quiz-result__score"></p>
+        <button class="quiz-result__restart"></button>
+      </section>
+    </main>
+    <script src="./js/app.js"></script>
+  </body>
 </html>
