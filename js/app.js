@@ -45,6 +45,7 @@ const choices = document.querySelectorAll(".quiz__choice");
 const nextButton = document.querySelector(".quiz__next");
 const currentResult = document.querySelector(".quiz__score");
 const message = document.querySelector(".quiz__message");
+const prevButton = document.querySelector(".quiz__prev");
 
 const quizResult = document.querySelector(".quiz-result");
 const quizResultTitle = document.querySelector(".quiz-result__title");
@@ -65,6 +66,7 @@ let answeredQuestions = [];
 function loadCard() {
   isAnswered = false;
 
+  resetButtonState();
   updateScore();
   resetChoices();
   loadQuestionNumber();
@@ -103,6 +105,13 @@ function resetChoices() {
       "quiz__choice--corrected",
     );
   });
+}
+
+function resetButtonState() {
+  // Disable the Previous button on the first question.
+  prevButton.disabled = currentQuestionIndex === 0;
+  // Enable the Next button.
+  nextButton.disabled = false;
 }
 
 /* ==================== 5. Answer Handling ==================== */
@@ -153,7 +162,6 @@ function setupNextButton() {
     }
     // Move forward if there are more questions.
     if (currentQuestionIndex < questions.length - 1) {
-      console.log("currentQuestionIndex", currentQuestionIndex);
       currentQuestionIndex++;
 
       loadCard();
@@ -165,6 +173,18 @@ function setupNextButton() {
     } else {
       // Show the final results after the last question.
       loadQuizResult();
+    }
+  });
+}
+
+//move to the previous question
+function setupPrevButton() {
+  prevButton.textContent = "Previous";
+
+  prevButton.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
+      loadCard();
     }
   });
 }
@@ -232,6 +252,7 @@ function restartQuiz() {
 function app() {
   loadCard();
   setupNextButton();
+  setupPrevButton();
   setupRestartButton();
   checkAnswer();
 }
