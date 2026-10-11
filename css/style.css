@@ -14,7 +14,8 @@
   --incorrect: #c1352b;
   --incorrect-bg: #fbe1de;
 
-  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto,
+  --font:
+    "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto,
     sans-serif;
 
   --radius: 10px;
@@ -166,6 +167,22 @@ button:focus-visible {
 .quiz__choice--incorrect::after {
   content: "\2715";
   font-weight: 800;
+}
+
+.quiz__choice--corrected,
+.quiz__choice--corrected:hover {
+  background: transparent;
+  border: 2px dashed var(--correct);
+  color: var(--correct);
+  font-weight: 600;
+  transform: none;
+  box-shadow: none;
+}
+
+.quiz__choice--corrected::after {
+  content: " ← Correct answer";
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 /* ---------- Footer ---------- */
