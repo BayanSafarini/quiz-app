@@ -44,6 +44,7 @@ const question = document.querySelector(".quiz__question");
 const choices = document.querySelectorAll(".quiz__choice");
 const nextButton = document.querySelector(".quiz__next");
 const currentResult = document.querySelector(".quiz__score");
+const message = document.querySelector(".quiz__message");
 
 const quizResult = document.querySelector(".quiz-result");
 const quizResultTitle = document.querySelector(".quiz-result__title");
@@ -56,6 +57,7 @@ const quizRestartButton = document.querySelector(".quiz-result__restart");
 let currentQuestionIndex = 0;
 let score = 0;
 let isAnswered = false;
+let answeredQuestions = [];
 
 /* ==================== 4. Display Functions ==================== */
 
@@ -140,6 +142,15 @@ function setupNextButton() {
   nextButton.textContent = "Next";
 
   nextButton.addEventListener("click", () => {
+    // Prevent moving forward if the current question hasn't been answered.
+    if (!isAnswered) {
+      message.textContent = "Please select an answer before proceeding.";
+      message.style.display = "block";
+      return;
+    } else {
+      message.textContent = "";
+      message.style.display = "none";
+    }
     // Move forward if there are more questions.
     if (currentQuestionIndex < questions.length - 1) {
       console.log("currentQuestionIndex", currentQuestionIndex);

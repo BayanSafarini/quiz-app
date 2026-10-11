@@ -13,6 +13,9 @@
   --correct-bg: #dcf4e8;
   --incorrect: #c1352b;
   --incorrect-bg: #fbe1de;
+  --alert: #f5a623;
+  --alert-bg: #fff4e5;
+  --alert-line: #f99c07;
 
   --font:
     "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto,
@@ -225,6 +228,22 @@ button:focus-visible {
 .quiz-result__restart:active {
   transform: translate(0, 0);
   box-shadow: none;
+}
+
+/* ---------- Message ---------- */
+.quiz__message {
+  display: none;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  background: var(--alert-bg);
+  color: var(--alert);
+  border: 1px solid var(--alert-line);
+  min-height: 1.5rem;
 }
 
 /* ---------- Result ---------- */
