@@ -306,9 +306,11 @@ function loadQuizReview() {
     const answerParagraph = document.createElement("p");
     answerParagraph.textContent = `Your answer: ${question.choices[answer]}`;
     li.appendChild(answerParagraph);
-    const correctAnswerParagraph = document.createElement("p");
-    correctAnswerParagraph.textContent = `Correct answer: ${question.choices[question.answer]}`;
-    li.appendChild(correctAnswerParagraph);
+    if (questions[index].answer !== answer) {
+      const correctAnswerParagraph = document.createElement("p");
+      correctAnswerParagraph.textContent = `Correct answer: ${question.choices[question.answer]}`;
+      li.appendChild(correctAnswerParagraph);
+    }
 
     reviewList.appendChild(li);
   });
