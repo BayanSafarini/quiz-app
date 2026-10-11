@@ -72,7 +72,6 @@ function loadCard() {
   isAnswered = false;
 
   resetButtonState();
-  updateScore();
   resetChoices();
   loadQuestionNumber();
   loadQuestion();
@@ -97,31 +96,15 @@ function loadChoices() {
 
   if (userAnswers[currentQuestionIndex] !== undefined) {
     const selectedChoiceIndex = userAnswers[currentQuestionIndex];
-    if (selectedChoiceIndex === questions[currentQuestionIndex].answer) {
-      choices[selectedChoiceIndex].classList.add("quiz__choice--correct");
-    } else {
-      choices[selectedChoiceIndex].classList.add("quiz__choice--incorrect");
-      choices[questions[currentQuestionIndex].answer].classList.add(
-        "quiz__choice--corrected",
-      );
-    }
+    choices[selectedChoiceIndex].classList.add("quiz__choice--selected");
     isAnswered = true; // Mark the question as answered since the user has already selected an answer.
   }
-}
-
-// Update the score shown below the question.
-function updateScore() {
-  currentResult.textContent = `Score: ${score} / ${questions.length}`;
 }
 
 // Remove correct/incorrect styling before displaying the next question.
 function resetChoices() {
   choices.forEach((choice) => {
-    choice.classList.remove(
-      "quiz__choice--correct",
-      "quiz__choice--incorrect",
-      "quiz__choice--corrected",
-    );
+    choice.classList.remove("quiz__choice--selected");
   });
 }
 
@@ -139,25 +122,19 @@ function checkAnswer() {
   choices.forEach((choice, index) => {
     choice.addEventListener("click", () => {
       // Prevent multiple answers and repeated score increases.
-      if (isAnswered) return;
+      // if (isAnswered) return;
 
       isAnswered = true;
 
       // Clear any previous answer styling.
       resetChoices();
-
-      // Compare the selected choice's index with the correct answer index.
+      // Check if the selected answer is correct.
       if (index === questions[currentQuestionIndex].answer) {
-        choice.classList.add("quiz__choice--correct");
-
         score++;
-        updateScore();
-      } else {
-        choice.classList.add("quiz__choice--incorrect");
-        choices[questions[currentQuestionIndex].answer].classList.add(
-          "quiz__choice--corrected",
-        );
       }
+      // Highlight the selected answer.
+      choice.classList.add("quiz__choice--selected");
+
       userAnswers[currentQuestionIndex] = index; // Store the user's answer for this question.
     });
   });
