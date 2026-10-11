@@ -65,7 +65,6 @@ let score = 0;
 let isAnswered = false;
 let userAnswers = [];
 
-
 /* ==================== 4. Display Functions ==================== */
 
 // Display the current question card and reset the previous answer state.
@@ -95,6 +94,19 @@ function loadChoices() {
   choices.forEach((choice, index) => {
     choice.textContent = questions[currentQuestionIndex].choices[index];
   });
+
+  if (userAnswers[currentQuestionIndex] !== undefined) {
+    const selectedChoiceIndex = userAnswers[currentQuestionIndex];
+    if (selectedChoiceIndex === questions[currentQuestionIndex].answer) {
+      choices[selectedChoiceIndex].classList.add("quiz__choice--correct");
+    } else {
+      choices[selectedChoiceIndex].classList.add("quiz__choice--incorrect");
+      choices[questions[currentQuestionIndex].answer].classList.add(
+        "quiz__choice--corrected",
+      );
+    }
+    isAnswered = true; // Mark the question as answered since the user has already selected an answer.
+  }
 }
 
 // Update the score shown below the question.
@@ -119,8 +131,6 @@ function resetButtonState() {
   // Enable the Next button.
   nextButton.disabled = false;
 }
-
-
 
 /* ==================== 5. Answer Handling ==================== */
 
