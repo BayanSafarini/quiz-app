@@ -13,8 +13,14 @@
   --correct-bg: #dcf4e8;
   --incorrect: #c1352b;
   --incorrect-bg: #fbe1de;
+  --alert-ink: #8a5300;
+  --alert-bg: #fff4e5;
+  --alert-line: #f99c07;
+  --disabled-ink: #8b95a8;
+  --disabled-line: #c3cad6;
 
-  --font: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto,
+  --font:
+    "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", Roboto,
     sans-serif;
 
   --radius: 10px;
@@ -74,7 +80,8 @@ button:focus-visible {
 
 /* ---------- Cards ---------- */
 .quiz,
-.quiz-result {
+.quiz-result,
+.quiz-review {
   background: var(--card);
   border: var(--border);
   border-radius: var(--radius);
@@ -82,11 +89,15 @@ button:focus-visible {
   padding: 1.75rem;
 }
 
-/* The result card stays hidden until app.js shows it */
+/* Result and review cards stay hidden until app.js shows them */
 .quiz-result {
   display: none;
   text-align: center;
   padding-block: 2.5rem;
+}
+
+.quiz-review {
+  display: none;
 }
 
 /* ---------- Question ---------- */
@@ -109,9 +120,10 @@ button:focus-visible {
 /* ---------- Choices ---------- */
 .quiz__choice {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.25rem 1rem;
   width: 100%;
   margin-bottom: 0.75rem;
   padding: 0.85rem 1.1rem;
@@ -168,6 +180,35 @@ button:focus-visible {
   font-weight: 800;
 }
 
+.quiz__choice--corrected,
+.quiz__choice--corrected:hover {
+  background: transparent;
+  border: 2px dashed var(--correct);
+  color: var(--correct);
+  font-weight: 600;
+  transform: none;
+  box-shadow: none;
+}
+
+.quiz__choice--corrected::after {
+  content: "\2190  Correct answer";
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Once a question is answered, the other choices stop reacting to hover */
+.quiz:has(.quiz__choice--correct, .quiz__choice--incorrect)
+  .quiz__choice:not(
+    .quiz__choice--correct,
+    .quiz__choice--incorrect,
+    .quiz__choice--corrected
+  ) {
+  background: var(--card);
+  transform: none;
+  box-shadow: none;
+  cursor: default;
+}
+
 /* ---------- Footer ---------- */
 .quiz__footer {
   display: flex;
@@ -176,17 +217,22 @@ button:focus-visible {
   gap: 1rem;
   margin-top: 1.5rem;
   padding-top: 1.25rem;
-  border-top: 2px dashed #c3cad6;
+  border-top: 2px dashed var(--disabled-line);
 }
 
 .quiz__score {
+  margin-right: auto; /* pushes the buttons to the right */
   font-weight: 600;
   color: var(--ink-soft);
 }
 
-/* ---------- Primary buttons ---------- */
+/* ---------- Buttons ---------- */
+/* Primary: filled blue */
 .quiz__next,
-.quiz-result__restart {
+.quiz__prev,
+.quiz-result__review,
+.quiz-result__restart,
+.quiz-review__restart {
   padding: 0.7rem 1.6rem;
   background: var(--accent);
   color: var(--accent-ink);
@@ -198,16 +244,58 @@ button:focus-visible {
     box-shadow 0.12s ease;
 }
 
+/* Secondary: white with an outline */
+.quiz__prev,
+.quiz-result__review {
+  background: var(--card);
+  color: var(--ink);
+}
+
 .quiz__next:hover,
-.quiz-result__restart:hover {
+.quiz__prev:hover,
+.quiz-result__review:hover,
+.quiz-result__restart:hover,
+.quiz-review__restart:hover {
   transform: translate(-2px, -2px);
   box-shadow: 3px 3px 0 var(--line);
 }
 
+.quiz__prev:hover,
+.quiz-result__review:hover {
+  background: var(--paper);
+}
+
 .quiz__next:active,
-.quiz-result__restart:active {
+.quiz__prev:active,
+.quiz-result__review:active,
+.quiz-result__restart:active,
+.quiz-review__restart:active {
   transform: translate(0, 0);
   box-shadow: none;
+}
+
+.quiz__prev:disabled {
+  background: var(--paper);
+  color: var(--disabled-ink);
+  border-color: var(--disabled-line);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Message ---------- */
+.quiz__message {
+  display: none; /* shown by app.js */
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--alert-bg);
+  color: var(--alert-ink);
+  border: 2px solid var(--alert-line);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
 }
 
 /* ---------- Result ---------- */
@@ -233,6 +321,63 @@ button:focus-visible {
   color: var(--incorrect);
 }
 
+/* Space the two result buttons apart (they wrap on narrow screens) */
+.quiz-result__review,
+.quiz-result__restart {
+  margin: 0 0.35rem 0.75rem;
+}
+
+/* ---------- Review ---------- */
+.quiz-review__title {
+  margin-bottom: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.quiz-review__list {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+}
+
+.quiz-review__list > li {
+  margin-bottom: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--paper);
+  border: var(--border);
+  border-left-width: 8px;
+  border-radius: var(--radius);
+}
+
+.quiz-review__list > li:last-child {
+  margin-bottom: 0; /* the list's own margin separates it from the button */
+}
+
+.quiz-review__list > li.quiz-review__item--correct {
+  background: var(--correct-bg);
+  border-color: var(--correct);
+}
+
+.quiz-review__list > li.quiz-review__item--incorrect {
+  background: var(--incorrect-bg);
+  border-color: var(--incorrect);
+}
+
+.quiz-review__list p + p {
+  margin-top: 0.25rem;
+}
+
+/* First line of each item is the question */
+.quiz-review__list p:first-child {
+  font-weight: 600;
+}
+
+.quiz-review__restart {
+  display: block;
+  margin-inline: auto;
+}
+
 /* ---------- Small screens ---------- */
 @media (max-width: 480px) {
   main {
@@ -240,19 +385,26 @@ button:focus-visible {
   }
 
   .quiz,
-  .quiz-result {
+  .quiz-result,
+  .quiz-review {
     padding: 1.25rem;
     box-shadow: 4px 4px 0 var(--line);
   }
 
   .quiz__footer {
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  /* Score takes its own row; Previous and Next share the row below */
+  .quiz__score {
+    flex: 0 0 100%;
+    margin-right: 0;
     text-align: center;
   }
 
+  .quiz__prev,
   .quiz__next {
-    width: 100%;
+    flex: 1;
   }
 }
 

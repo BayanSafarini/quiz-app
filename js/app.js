@@ -46,6 +46,11 @@ const nextButton = document.querySelector(".quiz__next");
 const currentResult = document.querySelector(".quiz__score");
 const message = document.querySelector(".quiz__message");
 const prevButton = document.querySelector(".quiz__prev");
+const quizReviewButton = document.querySelector(".quiz-result__review");
+const quizReview = document.querySelector(".quiz-review");
+const quizReviewTitle = document.querySelector(".quiz-review__title");
+const quizReviewList = document.querySelector(".quiz-review__list");
+const quizReviewRestartButton = document.querySelector(".quiz-review__restart");
 
 const quizResult = document.querySelector(".quiz-result");
 const quizResultTitle = document.querySelector(".quiz-result__title");
@@ -58,7 +63,8 @@ const quizRestartButton = document.querySelector(".quiz-result__restart");
 let currentQuestionIndex = 0;
 let score = 0;
 let isAnswered = false;
-let answeredQuestions = [];
+let userAnswers = [];
+
 
 /* ==================== 4. Display Functions ==================== */
 
@@ -114,6 +120,8 @@ function resetButtonState() {
   nextButton.disabled = false;
 }
 
+
+
 /* ==================== 5. Answer Handling ==================== */
 
 // Check the user's selected answer and update the score when correct.
@@ -140,6 +148,7 @@ function checkAnswer() {
           "quiz__choice--corrected",
         );
       }
+      userAnswers[currentQuestionIndex] = index; // Store the user's answer for this question.
     });
   });
 }
@@ -223,10 +232,16 @@ function setupRestartButton() {
   quizRestartButton.addEventListener("click", restartQuiz);
 }
 
+function setupReviewButton() {
+  quizReviewButton.textContent = "Review Answers";
+  quizReviewButton.addEventListener("click", loadQuizReview);
+}
+
 // Reset the quiz so the user can play again.
 function restartQuiz() {
-  quiz.style.display = "block";
   quizResult.style.display = "none";
+  quizReview.style.display = "none";
+  quiz.style.display = "block";
 
   // Reset the quiz state.
   currentQuestionIndex = 0;
@@ -242,11 +257,54 @@ function restartQuiz() {
     "quiz-result__score--failure",
   );
 
+  userAnswers = [];
+
   // Display the first question again.
   loadCard();
 }
 
-/* ==================== 9. Initialize the App ==================== */
+/* ==================== 9. Quiz Review ==================== */
+function setupReviewRestartButton() {
+  quizReviewRestartButton.textContent = "Restart Quiz";
+  quizReviewRestartButton.addEventListener("click", restartQuiz);
+}
+function loadQuizReview() {
+  quiz.style.display = "none";
+  quizResult.style.display = "none";
+  quizReview.style.display = "block";
+
+  quizReviewTitle.textContent = "Review Your Answers";
+
+  const reviewList = document.querySelector(".quiz-review__list");
+  reviewList.innerHTML = "";
+
+  userAnswers.forEach((answer, index) => {
+    const li = document.createElement("li");
+    li.classList.add("quiz-review__item");
+
+    if (questions[index].answer === answer) {
+      li.classList.add("quiz-review__item--correct");
+    } else {
+      li.classList.add("quiz-review__item--incorrect");
+    }
+
+    const question = questions[index];
+    const questionParagraph = document.createElement("p");
+    questionParagraph.textContent = `Question ${index + 1}: ${question.question}`;
+    li.appendChild(questionParagraph);
+
+    const answerParagraph = document.createElement("p");
+    answerParagraph.textContent = `Your answer: ${question.choices[answer]}`;
+    li.appendChild(answerParagraph);
+    const correctAnswerParagraph = document.createElement("p");
+    correctAnswerParagraph.textContent = `Correct answer: ${question.choices[question.answer]}`;
+    li.appendChild(correctAnswerParagraph);
+
+    reviewList.appendChild(li);
+  });
+}
+
+/* ==================== 10. Initialize the App ==================== */
 
 // Set up the quiz when the script runs.
 function app() {
@@ -254,6 +312,8 @@ function app() {
   setupNextButton();
   setupPrevButton();
   setupRestartButton();
+  setupReviewButton();
+  setupReviewRestartButton();
   checkAnswer();
 }
 
