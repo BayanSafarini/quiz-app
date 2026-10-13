@@ -137,15 +137,17 @@ const choices = document.querySelectorAll(".quiz__choice");
 const nextButton = document.querySelector(".quiz__next");
 const message = document.querySelector(".quiz__message");
 const prevButton = document.querySelector(".quiz__prev");
+const quizResult = document.querySelector(".quiz-result");
+const quizResultTitle = document.querySelector(".quiz-result__title");
+const quizResultScore = document.querySelector(".quiz-result__score");
+const quizResultRestartButton = document.querySelector(".quiz-result__restart");
+const quizResultHomeButton = document.querySelector(".quiz-result__home");
 const quizReviewButton = document.querySelector(".quiz-result__review");
 const quizReview = document.querySelector(".quiz-review");
 const quizReviewTitle = document.querySelector(".quiz-review__title");
 const quizReviewList = document.querySelector(".quiz-review__list");
 const quizReviewRestartButton = document.querySelector(".quiz-review__restart");
-const quizResult = document.querySelector(".quiz-result");
-const quizResultTitle = document.querySelector(".quiz-result__title");
-const quizResultScore = document.querySelector(".quiz-result__score");
-const quizRestartButton = document.querySelector(".quiz-result__restart");
+const quizReviewHomeButton = document.querySelector(".quiz-review__home");
 
 /* ==================== 3. Quiz State ==================== */
 
@@ -315,7 +317,7 @@ function loadQuizResult() {
   const score = calculateScore();
   quizResultTitle.textContent = "Quiz Result";
   quizResultScore.textContent = `Score: ${score} / ${pickedQuestions.length}`;
-  quizRestartButton.textContent = "Restart Quiz";
+  quizResultRestartButton.textContent = "Restart Quiz";
 
   // Clear result styling from any previous attempt.
   quizResultScore.classList.remove(
@@ -389,7 +391,7 @@ function loadQuizReview() {
 // Listen for clicks on the Restart Quiz button.
 
 function setupRestartButton() {
-  quizRestartButton.addEventListener("click", restartQuiz);
+  quizResultRestartButton.addEventListener("click", restartQuiz);
 }
 
 // Reset the quiz so the user can play again.
@@ -521,6 +523,29 @@ function loadWelcomingPage() {
   welcomePage.style.display = "block";
 }
 
+function goHome() {
+  currentQuestionIndex = 0;
+  userAnswers = [];
+  pickedIds = [];
+  pickedQuestions = [];
+  isAnswered = false;
+  message.style.display = "none";
+
+  clearProgress();
+  loadWelcomingPage();
+}
+
+
+function setupResultHomeButton() {
+  quizResultHomeButton.textContent = "Home";
+  quizResultHomeButton.addEventListener("click", goHome);
+}
+
+function setupReviewHomeButton() {
+  quizReviewHomeButton.textContent = "Home";
+  quizReviewHomeButton.addEventListener("click", goHome);
+}
+
 /* ==================== 12. App Initialization ==================== */
 
 function setupButtons() {
@@ -529,6 +554,8 @@ function setupButtons() {
   setupRestartButton();
   setupReviewButton();
   setupReviewRestartButton();
+  setupReviewHomeButton();
+  setupResultHomeButton();
   setupStartButton();
 }
 

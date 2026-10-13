@@ -27,6 +27,8 @@
   --radius: 10px;
   --border: 2px solid var(--line);
   --shadow: 5px 5px 0 var(--line);
+
+  --icon-home: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11.5 12 4l9 7.5'/%3E%3Cpath d='M5.5 10v10h13V10'/%3E%3Cpath d='M10 20v-6h4v6'/%3E%3C/svg%3E");
 }
 
 /* ---------- Base ---------- */
@@ -209,7 +211,9 @@ button:focus-visible {
 .quiz-result__review,
 .quiz-result__restart,
 .quiz-review__restart,
-.welcome-page__start {
+.welcome-page__start,
+.quiz-result__home,
+.quiz-review__home {
   padding: 0.7rem 1.6rem;
   background: var(--accent);
   color: var(--accent-ink);
@@ -228,7 +232,9 @@ button:focus-visible {
 
 /* Secondary: white with an outline */
 .quiz__prev,
-.quiz-result__review {
+.quiz-result__review,
+.quiz-result__home,
+.quiz-review__home {
   background: var(--card);
   color: var(--ink);
 }
@@ -238,7 +244,9 @@ button:focus-visible {
 .quiz-result__review:hover,
 .quiz-result__restart:hover,
 .quiz-review__restart:hover,
-.welcome-page__start:hover {
+.welcome-page__start:hover,
+.quiz-result__home:hover,
+.quiz-review__home:hover {
   transform: translate(-2px, -2px);
   box-shadow: 3px 3px 0 var(--line);
 }
@@ -253,12 +261,13 @@ button:focus-visible {
 .quiz-result__review:active,
 .quiz-result__restart:active,
 .quiz-review__restart:active,
-.welcome-page__start:active {
+.welcome-page__start:active,
+.quiz-result__home:active,
+.quiz-review__home:active {
   transform: translate(0, 0);
   box-shadow: none;
 }
 
-.quiz__next:disabled,
 .quiz__prev:disabled {
   background: var(--paper);
   color: var(--disabled-ink);
@@ -308,7 +317,8 @@ button:focus-visible {
 
 /* Space the two result buttons apart (they wrap on narrow screens) */
 .quiz-result__review,
-.quiz-result__restart {
+.quiz-result__restart,
+.quiz-review__restart {
   margin: 0 0.35rem 0.75rem;
 }
 
@@ -361,6 +371,51 @@ button:focus-visible {
 .quiz-review__restart {
   display: block;
   margin-inline: auto;
+}
+
+/* ---------- Home buttons (result + review) ---------- */
+.quiz-result__home,
+.quiz-review__home {
+  display: flex; /* block-level, so it always drops to its own row */
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  margin: 0.75rem auto 0;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  box-shadow: none;
+  color: var(--ink-soft);
+  font-weight: 600;
+  transition:
+    transform 0.12s ease,
+    color 0.12s ease;
+}
+
+.quiz-result__home:hover,
+.quiz-review__home:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: none;
+  background: none;
+}
+
+.quiz-result__home:active,
+.quiz-review__home:active {
+  transform: translateY(0);
+}
+
+/* Icon: house drawn with a mask, so it follows the text color */
+.quiz-result__home::before,
+.quiz-review__home::before {
+  content: "";
+  width: 1.2em;
+  height: 1.2em;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-home) center / contain no-repeat;
+  mask: var(--icon-home) center / contain no-repeat;
 }
 
 /* ---------- Small screens ---------- */
