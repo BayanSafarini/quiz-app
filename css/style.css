@@ -100,8 +100,6 @@ button:focus-visible {
   color: var(--ink-soft);
 }
 
-
-
 /* ---------- Cards ---------- */
 .quiz,
 .quiz-result,
@@ -193,19 +191,6 @@ button:focus-visible {
   content: "\25CF"; /* filled dot */
 }
 
-/* Once a question is answered, the other choices stop reacting to hover */
-.quiz:has(.quiz__choice--correct, .quiz__choice--incorrect)
-  .quiz__choice:not(
-    .quiz__choice--correct,
-    .quiz__choice--incorrect,
-    .quiz__choice--corrected
-  ) {
-  background: var(--card);
-  transform: none;
-  box-shadow: none;
-  cursor: default;
-}
-
 /* ---------- Footer ---------- */
 .quiz__footer {
   display: flex;
@@ -235,7 +220,6 @@ button:focus-visible {
     transform 0.12s ease,
     box-shadow 0.12s ease;
 }
-
 
 .welcome-page__start {
   padding: 0.85rem 2.25rem;
@@ -396,13 +380,6 @@ button:focus-visible {
 
   .quiz__footer {
     flex-wrap: wrap;
-  }
-
-  /* Score takes its own row; Previous and Next share the row below */
-  .quiz__score {
-    flex: 0 0 100%;
-    margin-right: 0;
-    text-align: center;
   }
 
   .quiz__prev,

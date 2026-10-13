@@ -135,7 +135,6 @@ const questionNumber = document.querySelector(".quiz__question-number");
 const question = document.querySelector(".quiz__question");
 const choices = document.querySelectorAll(".quiz__choice");
 const nextButton = document.querySelector(".quiz__next");
-const currentResult = document.querySelector(".quiz__score");
 const message = document.querySelector(".quiz__message");
 const prevButton = document.querySelector(".quiz__prev");
 const quizReviewButton = document.querySelector(".quiz-result__review");
@@ -190,6 +189,7 @@ function loadCard() {
   loadQuestionNumber();
   loadQuestion();
   loadChoices();
+  message.style.display = "none";
   saveProgress("quiz");
 }
 
