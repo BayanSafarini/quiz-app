@@ -38,6 +38,13 @@ const questions = [
 /* ==================== 2. DOM Elements ==================== */
 
 // Select the HTML elements that JavaScript will update or control.
+const quizTitle = document.querySelector(".quiz-title");
+const welcomePage = document.querySelector(".welcome-page");
+const welcomePageTitle = document.querySelector(".welcome-page__title");
+const welcomePageDescription = document.querySelector(".welcome-page__description");
+const welcomePageStartButton = document.querySelector(
+  ".welcome-page__start",
+);
 const quiz = document.querySelector(".quiz");
 const questionNumber = document.querySelector(".quiz__question-number");
 const question = document.querySelector(".quiz__question");
@@ -292,17 +299,28 @@ function loadQuizReview() {
     reviewList.appendChild(li);
   });
 }
+/* ==================== 10. welcoming page ==================== */
+function loadWelcomingPage() {
+  quiz.style.display = "none";
+  quizResult.style.display = "none";
+  quizReview.style.display = "none";
+  welcomePage.style.display = "block";
+}
 
 /* ==================== 10. Initialize the App ==================== */
 
-// Set up the quiz when the script runs.
-function app() {
-  loadCard();
+function setupButtons() {
   setupNextButton();
   setupPrevButton();
   setupRestartButton();
   setupReviewButton();
   setupReviewRestartButton();
+}
+
+// Set up the quiz when the script runs.
+function app() {
+  loadCard();
+  setupButtons();
   checkAnswer();
 }
 
