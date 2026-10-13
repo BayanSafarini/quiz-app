@@ -179,6 +179,8 @@ function loadCard() {
   welcomePage.style.display = "none";
   quiz.style.display = "block";
   isAnswered = false;
+  nextButton.textContent =
+    currentQuestionIndex === pickedQuestions.length - 1 ? "Finish" : "Next";
   resetButtonState();
   resetChoices();
   loadQuestionNumber();
