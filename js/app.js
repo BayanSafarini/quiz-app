@@ -2,6 +2,7 @@
 
 // Store the quiz questions, answer choices, and correct answer indexes.
 // Indexes start at 0, so answer: 2 means the third choice is correct.
+
 const questions = [
   {
     question: "What is the largest planet in our Solar System?",
@@ -33,11 +34,95 @@ const questions = [
     ],
     answer: 3,
   },
+  {
+    question: "What is the chemical symbol for gold?",
+    choices: ["Ag", "Au", "Fe", "Go"],
+    answer: 1,
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    choices: ["Venus", "Mercury", "Mars", "Neptune"],
+    answer: 2,
+  },
+  {
+    question: "What is the largest mammal in the world?",
+    choices: ["African Elephant", "Blue Whale", "Giraffe", "Orca"],
+    answer: 1,
+  },
+  {
+    question: "Which language is primarily spoken in Brazil?",
+    choices: ["Spanish", "French", "Portuguese", "Italian"],
+    answer: 2,
+  },
+  {
+    question: "What is the hardest naturally occurring substance?",
+    choices: ["Quartz", "Iron", "Diamond", "Granite"],
+    answer: 2,
+  },
+  {
+    question: "How many sides does a hexagon have?",
+    choices: ["Five", "Six", "Seven", "Eight"],
+    answer: 1,
+  },
+  {
+    question: "Which organ pumps blood throughout the human body?",
+    choices: ["Lungs", "Liver", "Brain", "Heart"],
+    answer: 3,
+  },
+  {
+    question: "What is the closest star to Earth?",
+    choices: ["Sirius", "The Sun", "Proxima Centauri", "Polaris"],
+    answer: 1,
+  },
+  {
+    question: "Which is the largest hot desert in the world?",
+    choices: [
+      "Gobi Desert",
+      "Arabian Desert",
+      "Sahara Desert",
+      "Kalahari Desert",
+    ],
+    answer: 2,
+  },
+  {
+    question:
+      "What is the main gas that plants absorb from the atmosphere during photosynthesis?",
+    choices: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
+    answer: 2,
+  },
+  {
+    question:
+      "Which ancient city is famous for its rock-cut architecture in Jordan?",
+    choices: ["Palmyra", "Petra", "Babylon", "Jericho"],
+    answer: 1,
+  },
+  {
+    question: "What is the capital city of Palestine?",
+    choices: ["Ramallah", "Gaza", "Jerusalem", "Nablus"],
+    answer: 2,
+  },
+  {
+    question: "Which instrument is used to measure temperature?",
+    choices: ["Barometer", "Thermometer", "Hygrometer", "Speedometer"],
+    answer: 1,
+  },
+  {
+    question: "What is the smallest prime number?",
+    choices: ["0", "1", "2", "3"],
+    answer: 2,
+  },
+  {
+    question:
+      "Which part of a computer performs most arithmetic and logical operations?",
+    choices: ["RAM", "CPU", "SSD", "GPU"],
+    answer: 1,
+  },
 ];
 
 /* ==================== 2. DOM Elements ==================== */
 
 // Select the HTML elements that JavaScript will update or control.
+
 const quizTitle = document.querySelector(".quiz-title");
 const welcomePage = document.querySelector(".welcome-page");
 const welcomePageTitle = document.querySelector(".welcome-page__title");
@@ -58,7 +143,6 @@ const quizReview = document.querySelector(".quiz-review");
 const quizReviewTitle = document.querySelector(".quiz-review__title");
 const quizReviewList = document.querySelector(".quiz-review__list");
 const quizReviewRestartButton = document.querySelector(".quiz-review__restart");
-
 const quizResult = document.querySelector(".quiz-result");
 const quizResultTitle = document.querySelector(".quiz-result__title");
 const quizResultScore = document.querySelector(".quiz-result__score");
@@ -67,19 +151,34 @@ const quizRestartButton = document.querySelector(".quiz-result__restart");
 /* ==================== 3. Quiz State ==================== */
 
 // Track the current question, score, and answer status.
+
+let pickedQuestions = [];
 let currentQuestionIndex = 0;
-let score = 0;
 let isAnswered = false;
 let userAnswers = [];
 
-/* ==================== 4. Display Functions ==================== */
+/* ==================== 4. Question Selection ==================== */
+
+function selectRandomQuestions() {
+  const shuffled = [...questions];
+
+  // Fisher–Yates shuffle
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  pickedQuestions = shuffled.slice(0, 5); // Select the first 5 questions from the shuffled array.
+}
+
+/* ==================== 5. Display Functions ==================== */
 
 // Display the current question card and reset the previous answer state.
+
 function loadCard() {
   welcomePage.style.display = "none";
   quiz.style.display = "block";
   isAnswered = false;
-
   resetButtonState();
   resetChoices();
   loadQuestionNumber();
@@ -88,19 +187,22 @@ function loadCard() {
 }
 
 // Display the current question number and total number of questions.
+
 function loadQuestionNumber() {
-  questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+  questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${pickedQuestions.length}`;
 }
 
 // Display the current question's text.
+
 function loadQuestion() {
-  question.textContent = questions[currentQuestionIndex].question;
+  question.textContent = pickedQuestions[currentQuestionIndex].question;
 }
 
 // Display the answer choices for the current question.
+
 function loadChoices() {
   choices.forEach((choice, index) => {
-    choice.textContent = questions[currentQuestionIndex].choices[index];
+    choice.textContent = pickedQuestions[currentQuestionIndex].choices[index];
   });
 
   if (userAnswers[currentQuestionIndex] !== undefined) {
@@ -110,7 +212,8 @@ function loadChoices() {
   }
 }
 
-// Remove correct/incorrect styling before displaying the next question.
+// Remove the selected styling from all answer choices.
+
 function resetChoices() {
   choices.forEach((choice) => {
     choice.classList.remove("quiz__choice--selected");
@@ -120,38 +223,31 @@ function resetChoices() {
 function resetButtonState() {
   // Disable the Previous button on the first question.
   prevButton.disabled = currentQuestionIndex === 0;
-  // Enable the Next button.
-  nextButton.disabled = false;
 }
 
-/* ==================== 5. Answer Handling ==================== */
+/* ==================== 6. Answer Handling ==================== */
 
 // Check the user's selected answer and update the score when correct.
+
 function checkAnswer() {
   choices.forEach((choice, index) => {
     choice.addEventListener("click", () => {
-      // Prevent multiple answers and repeated score increases.
-      // if (isAnswered) return;
-
       isAnswered = true;
 
       // Clear any previous answer styling.
       resetChoices();
-      // Check if the selected answer is correct.
-      if (index === questions[currentQuestionIndex].answer) {
-        score++;
-      }
+
       // Highlight the selected answer.
       choice.classList.add("quiz__choice--selected");
-
       userAnswers[currentQuestionIndex] = index; // Store the user's answer for this question.
     });
   });
 }
 
-/* ==================== 6. Question Navigation ==================== */
+/* ==================== 7. Question Navigation ==================== */
 
 // Move to the next question or finish the quiz.
+
 function setupNextButton() {
   nextButton.textContent = "Next";
 
@@ -165,14 +261,14 @@ function setupNextButton() {
       message.textContent = "";
       message.style.display = "none";
     }
-    // Move forward if there are more questions.
-    if (currentQuestionIndex < questions.length - 1) {
-      currentQuestionIndex++;
 
+    // Move forward if there are more questions.
+    if (currentQuestionIndex < pickedQuestions.length - 1) {
+      currentQuestionIndex++;
       loadCard();
 
       // Show Finish instead of Next on the last question.
-      if (currentQuestionIndex === questions.length - 1) {
+      if (currentQuestionIndex === pickedQuestions.length - 1) {
         nextButton.textContent = "Finish";
       }
     } else {
@@ -182,7 +278,8 @@ function setupNextButton() {
   });
 }
 
-//move to the previous question
+// Move to the previous question.
+
 function setupPrevButton() {
   prevButton.textContent = "Previous";
 
@@ -194,14 +291,27 @@ function setupPrevButton() {
   });
 }
 
-/* ==================== 7. Quiz Results ==================== */
+/* ==================== 8. Quiz Results ==================== */
+
+// Calculate the user's score based on their answers.
+
+function calculateScore() {
+  return userAnswers.reduce((total, answer, index) => {
+    if (answer === pickedQuestions[index].answer) {
+      return total + 1;
+    }
+
+    return total;
+  }, 0);
+}
 
 // Hide the quiz and display the final score.
+
 function loadQuizResult() {
   quiz.style.display = "none";
-
+  const score = calculateScore();
   quizResultTitle.textContent = "Quiz Result";
-  quizResultScore.textContent = `Score: ${score} / ${questions.length}`;
+  quizResultScore.textContent = `Score: ${score} / ${pickedQuestions.length}`;
   quizRestartButton.textContent = "Restart Quiz";
 
   // Clear result styling from any previous attempt.
@@ -211,7 +321,7 @@ function loadQuizResult() {
   );
 
   // Consider a score of at least half the questions a pass.
-  if (score >= questions.length / 2) {
+  if (score >= pickedQuestions.length / 2) {
     quizResultScore.classList.add("quiz-result__score--passed");
   } else {
     quizResultScore.classList.add("quiz-result__score--failure");
@@ -221,19 +331,64 @@ function loadQuizResult() {
   quizResult.style.display = "block";
 }
 
-/* ==================== 8. Restart Quiz ==================== */
-
-// Listen for clicks on the Restart Quiz button.
-function setupRestartButton() {
-  quizRestartButton.addEventListener("click", restartQuiz);
-}
+/* ==================== 9. Quiz Review ==================== */
 
 function setupReviewButton() {
   quizReviewButton.textContent = "Review Answers";
   quizReviewButton.addEventListener("click", loadQuizReview);
 }
 
+function setupReviewRestartButton() {
+  quizReviewRestartButton.textContent = "Restart Quiz";
+  quizReviewRestartButton.addEventListener("click", restartQuiz);
+}
+
+function loadQuizReview() {
+  quiz.style.display = "none";
+  quizResult.style.display = "none";
+  quizReview.style.display = "block";
+  quizReviewTitle.textContent = "Review Your Answers";
+  quizReviewList.innerHTML = "";
+
+  userAnswers.forEach((answer, index) => {
+    const li = document.createElement("li");
+    li.classList.add("quiz-review__item");
+
+    if (pickedQuestions[index].answer === answer) {
+      li.classList.add("quiz-review__item--correct");
+    } else {
+      li.classList.add("quiz-review__item--incorrect");
+    }
+
+    const question = pickedQuestions[index];
+    const questionParagraph = document.createElement("p");
+    questionParagraph.textContent = `Question ${index + 1}: ${question.question}`;
+    li.appendChild(questionParagraph);
+
+    const answerParagraph = document.createElement("p");
+    answerParagraph.textContent = `Your answer: ${question.choices[answer]}`;
+    li.appendChild(answerParagraph);
+
+    if (pickedQuestions[index].answer !== answer) {
+      const correctAnswerParagraph = document.createElement("p");
+      correctAnswerParagraph.textContent = `Correct answer: ${question.choices[question.answer]}`;
+      li.appendChild(correctAnswerParagraph);
+    }
+
+    quizReviewList.appendChild(li);
+  });
+}
+
+/* ==================== 10. Restart Quiz ==================== */
+
+// Listen for clicks on the Restart Quiz button.
+
+function setupRestartButton() {
+  quizRestartButton.addEventListener("click", restartQuiz);
+}
+
 // Reset the quiz so the user can play again.
+
 function restartQuiz() {
   quizResult.style.display = "none";
   quizReview.style.display = "none";
@@ -241,8 +396,8 @@ function restartQuiz() {
 
   // Reset the quiz state.
   currentQuestionIndex = 0;
-  score = 0;
   isAnswered = false;
+  pickedQuestions = [];
 
   // Restore the initial button text.
   nextButton.textContent = "Next";
@@ -255,65 +410,36 @@ function restartQuiz() {
 
   userAnswers = [];
 
+  // Pick new random questions for the quiz.
+  selectRandomQuestions();
+
   // Display the first question again.
   loadCard();
 }
 
-/* ==================== 9. Quiz Review ==================== */
-function setupReviewRestartButton() {
-  quizReviewRestartButton.textContent = "Restart Quiz";
-  quizReviewRestartButton.addEventListener("click", restartQuiz);
-}
-function loadQuizReview() {
-  quiz.style.display = "none";
-  quizResult.style.display = "none";
-  quizReview.style.display = "block";
+/* ==================== 11. Welcome Page ==================== */
 
-  quizReviewTitle.textContent = "Review Your Answers";
-
-  const reviewList = document.querySelector(".quiz-review__list");
-  reviewList.innerHTML = "";
-
-  userAnswers.forEach((answer, index) => {
-    const li = document.createElement("li");
-    li.classList.add("quiz-review__item");
-
-    if (questions[index].answer === answer) {
-      li.classList.add("quiz-review__item--correct");
-    } else {
-      li.classList.add("quiz-review__item--incorrect");
-    }
-
-    const question = questions[index];
-    const questionParagraph = document.createElement("p");
-    questionParagraph.textContent = `Question ${index + 1}: ${question.question}`;
-    li.appendChild(questionParagraph);
-
-    const answerParagraph = document.createElement("p");
-    answerParagraph.textContent = `Your answer: ${question.choices[answer]}`;
-    li.appendChild(answerParagraph);
-    if (questions[index].answer !== answer) {
-      const correctAnswerParagraph = document.createElement("p");
-      correctAnswerParagraph.textContent = `Correct answer: ${question.choices[question.answer]}`;
-      li.appendChild(correctAnswerParagraph);
-    }
-
-    reviewList.appendChild(li);
-  });
-}
-/* ==================== 10. welcoming page ==================== */
 function setupStartButton() {
   welcomePageStartButton.textContent = "Start Quiz";
-  welcomePageStartButton.addEventListener("click", loadCard);
+
+  welcomePageStartButton.addEventListener("click", () => {
+    selectRandomQuestions();
+    loadCard();
+  });
 }
+
 function loadWelcomingPage() {
+  welcomePageTitle.textContent = "Ready to begin?";
+  welcomePageDescription.textContent =
+    "Answer 5 questions and see how you score. Click the button below to start!";
+
   quiz.style.display = "none";
   quizResult.style.display = "none";
   quizReview.style.display = "none";
   welcomePage.style.display = "block";
 }
 
-/* ==================== 10. Initialize the App ==================== */
+/* ==================== 12. App Initialization ==================== */
 
 function setupButtons() {
   setupNextButton();
@@ -325,6 +451,7 @@ function setupButtons() {
 }
 
 // Set up the quiz when the script runs.
+
 function app() {
   loadWelcomingPage();
   setupButtons();
@@ -332,4 +459,5 @@ function app() {
 }
 
 // Start the application.
+
 app();
