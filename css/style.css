@@ -79,15 +79,43 @@ button:focus-visible {
   text-align: center;
 }
 
+/* ---------- Welcome ---------- */
+.welcome-page {
+  text-align: center;
+  padding-block: 3rem;
+}
+
+.welcome-page__title {
+  margin-bottom: 1rem;
+  font-size: clamp(1.6rem, 5vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.welcome-page__description {
+  max-width: 32ch;
+  margin: 0 auto 2rem;
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+}
+
+
+
 /* ---------- Cards ---------- */
 .quiz,
 .quiz-result,
-.quiz-review {
+.quiz-review,
+.welcome-page {
   background: var(--card);
   border: var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 1.75rem;
+}
+
+.quiz {
+  display: none; /* shown by app.js */
 }
 
 /* Result and review cards stay hidden until app.js shows them */
@@ -195,7 +223,8 @@ button:focus-visible {
 .quiz__prev,
 .quiz-result__review,
 .quiz-result__restart,
-.quiz-review__restart {
+.quiz-review__restart,
+.welcome-page__start {
   padding: 0.7rem 1.6rem;
   background: var(--accent);
   color: var(--accent-ink);
@@ -205,6 +234,12 @@ button:focus-visible {
   transition:
     transform 0.12s ease,
     box-shadow 0.12s ease;
+}
+
+
+.welcome-page__start {
+  padding: 0.85rem 2.25rem;
+  font-size: 1.1rem;
 }
 
 /* Secondary: white with an outline */
@@ -218,7 +253,8 @@ button:focus-visible {
 .quiz__prev:hover,
 .quiz-result__review:hover,
 .quiz-result__restart:hover,
-.quiz-review__restart:hover {
+.quiz-review__restart:hover,
+.welcome-page__start:hover {
   transform: translate(-2px, -2px);
   box-shadow: 3px 3px 0 var(--line);
 }
@@ -232,7 +268,8 @@ button:focus-visible {
 .quiz__prev:active,
 .quiz-result__review:active,
 .quiz-result__restart:active,
-.quiz-review__restart:active {
+.quiz-review__restart:active,
+.welcome-page__start:active {
   transform: translate(0, 0);
   box-shadow: none;
 }
@@ -350,7 +387,9 @@ button:focus-visible {
 
   .quiz,
   .quiz-result,
-  .quiz-review {
+  .quiz-review,
+  .welcome-page {
+    margin-inline: 1rem;
     padding: 1.25rem;
     box-shadow: 4px 4px 0 var(--line);
   }

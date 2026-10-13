@@ -41,10 +41,10 @@ const questions = [
 const quizTitle = document.querySelector(".quiz-title");
 const welcomePage = document.querySelector(".welcome-page");
 const welcomePageTitle = document.querySelector(".welcome-page__title");
-const welcomePageDescription = document.querySelector(".welcome-page__description");
-const welcomePageStartButton = document.querySelector(
-  ".welcome-page__start",
+const welcomePageDescription = document.querySelector(
+  ".welcome-page__description",
 );
+const welcomePageStartButton = document.querySelector(".welcome-page__start");
 const quiz = document.querySelector(".quiz");
 const questionNumber = document.querySelector(".quiz__question-number");
 const question = document.querySelector(".quiz__question");
@@ -76,6 +76,8 @@ let userAnswers = [];
 
 // Display the current question card and reset the previous answer state.
 function loadCard() {
+  welcomePage.style.display = "none";
+  quiz.style.display = "block";
   isAnswered = false;
 
   resetButtonState();
@@ -300,6 +302,10 @@ function loadQuizReview() {
   });
 }
 /* ==================== 10. welcoming page ==================== */
+function setupStartButton() {
+  welcomePageStartButton.textContent = "Start Quiz";
+  welcomePageStartButton.addEventListener("click", loadCard);
+}
 function loadWelcomingPage() {
   quiz.style.display = "none";
   quizResult.style.display = "none";
@@ -315,11 +321,12 @@ function setupButtons() {
   setupRestartButton();
   setupReviewButton();
   setupReviewRestartButton();
+  setupStartButton();
 }
 
 // Set up the quiz when the script runs.
 function app() {
-  loadCard();
+  loadWelcomingPage();
   setupButtons();
   checkAnswer();
 }
