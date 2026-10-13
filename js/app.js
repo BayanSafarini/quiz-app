@@ -152,7 +152,10 @@ const quizRestartButton = document.querySelector(".quiz-result__restart");
 
 // Track the current question, score, and answer status.
 
+const STORAGE_KEY = "quizProgress";
+
 let pickedQuestions = [];
+let pickedIds = [];
 let currentQuestionIndex = 0;
 let isAnswered = false;
 let userAnswers = [];
@@ -160,15 +163,16 @@ let userAnswers = [];
 /* ==================== 4. Question Selection ==================== */
 
 function selectRandomQuestions() {
-  const shuffled = [...questions];
+  const ids = questions.map((_, i) => i);
 
   // Fisher–Yates shuffle
-  for (let i = shuffled.length - 1; i > 0; i--) {
+  for (let i = ids.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    [ids[i], ids[j]] = [ids[j], ids[i]];
   }
 
-  pickedQuestions = shuffled.slice(0, 5); // Select the first 5 questions from the shuffled array.
+  pickedIds = ids.slice(0, 5);
+  pickedQuestions = pickedIds.map((i) => questions[i]);
 }
 
 /* ==================== 5. Display Functions ==================== */
@@ -186,6 +190,7 @@ function loadCard() {
   loadQuestionNumber();
   loadQuestion();
   loadChoices();
+  saveProgress("quiz");
 }
 
 // Display the current question number and total number of questions.
@@ -242,6 +247,7 @@ function checkAnswer() {
       // Highlight the selected answer.
       choice.classList.add("quiz__choice--selected");
       userAnswers[currentQuestionIndex] = index; // Store the user's answer for this question.
+      saveProgress("quiz");
     });
   });
 }
@@ -268,11 +274,6 @@ function setupNextButton() {
     if (currentQuestionIndex < pickedQuestions.length - 1) {
       currentQuestionIndex++;
       loadCard();
-
-      // Show Finish instead of Next on the last question.
-      if (currentQuestionIndex === pickedQuestions.length - 1) {
-        nextButton.textContent = "Finish";
-      }
     } else {
       // Show the final results after the last question.
       loadQuizResult();
@@ -331,6 +332,7 @@ function loadQuizResult() {
 
   // Make the result section visible.
   quizResult.style.display = "block";
+  saveProgress("result");
 }
 
 /* ==================== 9. Quiz Review ==================== */
@@ -362,23 +364,24 @@ function loadQuizReview() {
       li.classList.add("quiz-review__item--incorrect");
     }
 
-    const question = pickedQuestions[index];
+    const q = pickedQuestions[index];
     const questionParagraph = document.createElement("p");
-    questionParagraph.textContent = `Question ${index + 1}: ${question.question}`;
+    questionParagraph.textContent = `Question ${index + 1}: ${q.question}`;
     li.appendChild(questionParagraph);
 
     const answerParagraph = document.createElement("p");
-    answerParagraph.textContent = `Your answer: ${question.choices[answer]}`;
+    answerParagraph.textContent = `Your answer: ${q.choices[answer]}`;
     li.appendChild(answerParagraph);
 
     if (pickedQuestions[index].answer !== answer) {
       const correctAnswerParagraph = document.createElement("p");
-      correctAnswerParagraph.textContent = `Correct answer: ${question.choices[question.answer]}`;
+      correctAnswerParagraph.textContent = `Correct answer: ${q.choices[q.answer]}`;
       li.appendChild(correctAnswerParagraph);
     }
 
     quizReviewList.appendChild(li);
   });
+  saveProgress("review");
 }
 
 /* ==================== 10. Restart Quiz ==================== */
@@ -419,6 +422,83 @@ function restartQuiz() {
   loadCard();
 }
 
+/* ==================== Progress Storage ==================== */
+
+function isValidAnswer(a) {
+  return Number.isInteger(a) && a >= 0 && a < choices.length;
+}
+
+function saveProgress(screen) {
+  try {
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ screen, pickedIds, currentQuestionIndex, userAnswers }),
+    );
+  } catch {
+    // Storage may be full or blocked; the quiz still works without it.
+  }
+}
+
+function clearProgress() {
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch {}
+}
+
+// Returns true if saved progress was found and restored.
+function restoreProgress() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+    if (!saved) return false;
+
+    const {
+      screen: savedScreen,
+      pickedIds: ids,
+      currentQuestionIndex: index,
+      userAnswers: answers,
+    } = saved;
+
+    const isValid =
+      Array.isArray(ids) &&
+      ids.length > 0 &&
+      ids.every((i) => Number.isInteger(i) && questions[i]) &&
+      Array.isArray(answers) &&
+      answers.every(isValidAnswer) &&
+      Number.isInteger(index) &&
+      index >= 0 &&
+      index < ids.length &&
+      answers.length >= index &&
+      answers.length <= ids.length;
+
+    const isComplete =
+      Array.isArray(ids) &&
+      Array.isArray(answers) &&
+      answers.length === ids.length &&
+      answers.every(isValidAnswer);
+
+    if (!isValid || (savedScreen !== "quiz" && !isComplete)) {
+      clearProgress();
+      return false;
+    }
+
+    pickedIds = ids;
+    pickedQuestions = ids.map((i) => questions[i]);
+    currentQuestionIndex = index;
+    userAnswers = answers;
+
+    welcomePage.style.display = "none";
+
+    if (savedScreen === "result") loadQuizResult();
+    else if (savedScreen === "review") loadQuizReview();
+    else loadCard();
+
+    return true;
+  } catch {
+    clearProgress();
+    return false;
+  }
+}
+
 /* ==================== 11. Welcome Page ==================== */
 
 function setupStartButton() {
@@ -455,9 +535,11 @@ function setupButtons() {
 // Set up the quiz when the script runs.
 
 function app() {
-  loadWelcomingPage();
   setupButtons();
   checkAnswer();
+  if (!restoreProgress()) {
+    loadWelcomingPage();
+  }
 }
 
 // Start the application.
