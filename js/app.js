@@ -123,31 +123,31 @@ const questions = [
 
 // Select the HTML elements that JavaScript will update or control.
 
-const quizTitle = document.querySelector(".quiz-title");
-const welcomePage = document.querySelector(".welcome-page");
-const welcomePageTitle = document.querySelector(".welcome-page__title");
+const quizTitle = document.querySelector("#quiz-title");
+const welcomePage = document.querySelector("#welcome-page");
+const welcomePageTitle = document.querySelector("#welcome-page-title");
 const welcomePageDescription = document.querySelector(
-  ".welcome-page__description",
+  "#welcome-page-description",
 );
-const welcomePageStartButton = document.querySelector(".welcome-page__start");
-const quiz = document.querySelector(".quiz");
-const questionNumber = document.querySelector(".quiz__question-number");
-const question = document.querySelector(".quiz__question");
+const welcomePageStartButton = document.querySelector("#welcome-page-start");
+const quiz = document.querySelector("#quiz");
+const questionNumber = document.querySelector("#quiz-question-number");
+const question = document.querySelector("#quiz-question");
 const choices = document.querySelectorAll(".quiz__choice");
-const nextButton = document.querySelector(".quiz__next");
-const message = document.querySelector(".quiz__message");
-const prevButton = document.querySelector(".quiz__prev");
-const quizResult = document.querySelector(".quiz-result");
-const quizResultTitle = document.querySelector(".quiz-result__title");
-const quizResultScore = document.querySelector(".quiz-result__score");
-const quizResultRestartButton = document.querySelector(".quiz-result__restart");
-const quizResultHomeButton = document.querySelector(".quiz-result__home");
-const quizReviewButton = document.querySelector(".quiz-result__review");
-const quizReview = document.querySelector(".quiz-review");
-const quizReviewTitle = document.querySelector(".quiz-review__title");
-const quizReviewList = document.querySelector(".quiz-review__list");
-const quizReviewRestartButton = document.querySelector(".quiz-review__restart");
-const quizReviewHomeButton = document.querySelector(".quiz-review__home");
+const nextButton = document.querySelector("#quiz-next");
+const message = document.querySelector("#quiz-message");
+const prevButton = document.querySelector("#quiz-previous");
+const quizResult = document.querySelector("#quiz-result");
+const quizResultTitle = document.querySelector("#quiz-result-title");
+const quizResultScore = document.querySelector("#quiz-result-score");
+const quizResultRestartButton = document.querySelector("#quiz-result-restart");
+const quizResultHomeButton = document.querySelector("#quiz-result-home");
+const quizReviewButton = document.querySelector("#quiz-result-review");
+const quizReview = document.querySelector("#quiz-review");
+const quizReviewTitle = document.querySelector("#quiz-review-title");
+const quizReviewList = document.querySelector("#quiz-review-list");
+const quizReviewRestartButton = document.querySelector("#quiz-review-restart");
+const quizReviewHomeButton = document.querySelector("#quiz-review-home");
 
 /* ==================== 3. Quiz State ==================== */
 
@@ -534,7 +534,6 @@ function goHome() {
   clearProgress();
   loadWelcomingPage();
 }
-
 
 function setupResultHomeButton() {
   quizResultHomeButton.textContent = "Home";
