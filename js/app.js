@@ -163,16 +163,15 @@ let userAnswers = [];
 
 /* ==================== 4. Question Selection ==================== */
 
-function selectRandomQuestions() {
-  const ids = questions.map((_, i) => i);
+function selectRandomQuestions(count = 5) {
+  const ids = new Set();
+  const target = Math.min(count, questions.length);
 
-  // Fisher–Yates shuffle
-  for (let i = ids.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [ids[i], ids[j]] = [ids[j], ids[i]];
+  while (ids.size < target) {
+    ids.add(Math.floor(Math.random() * questions.length));
   }
 
-  pickedIds = ids.slice(0, 5);
+  pickedIds = [...ids];
   pickedQuestions = pickedIds.map((i) => questions[i]);
 }
 
@@ -437,7 +436,7 @@ function saveProgress(screen) {
       JSON.stringify({ screen, pickedIds, currentQuestionIndex, userAnswers }),
     );
   } catch {
-    // Storage may be full or blocked; the quiz still works without it.
+    // Storage may be full or blocked, the quiz still works without it.
   }
 }
 
